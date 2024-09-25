@@ -6,8 +6,45 @@ import { v } from "convex/values";
 // requires indexes defined on `authTables`.
 export default defineSchema({
   ...authTables,
-  messages: defineTable({
+  puzzles: defineTable({
+    // Cards are denoted by a number corresponding to their position in the unsorted deck
+    cards: v.array(v.number()),
+    // Array of triples of card numbers in sorted order
+    sets: v.array(v.array(v.number())),
+    // ISO string for the day
+    day: v.string(),
+  }).index("day", ["day"]),
+  stats: defineTable({
+    puzzleId: v.id("puzzles"),
     userId: v.id("users"),
-    body: v.string(),
+    state: v.union(
+      v.object({
+        kind: v.literal("NotStarted"),
+      }),
+      v.object({
+        kind: v.literal("InProgress"),
+        setsFound: v.array(v.array(v.number())),
+        timeElapsedMsBeforeStart: v.number(),
+        startedAt: v.number(),
+      }),
+      v.object({
+        kind: v.literal("Paused"),
+        setsFound: v.array(v.array(v.number())),
+        timeElapsedMs: v.number(),
+      }),
+      v.object({
+        kind: v.literal("Solved"),
+        setsFound: v.array(v.array(v.number())),
+        timeElapsedMs: v.number(),
+      }),
+    ),
+  }).index("UserAndPuzzle", ["userId", "puzzleId"]),
+  leaderboard: defineTable({
+    ownerId: v.id("users"),
+    password: v.string(),
+  }),
+  leaderboardMembers: defineTable({
+    userId: v.id("users"),
+    leaderboard: v.id("leaderboard"),
   }),
 });
