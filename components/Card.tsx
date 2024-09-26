@@ -5,11 +5,7 @@ import type { Card } from "../common/cards";
 import { PuzzleContext } from "./PuzzleProvider";
 import { cn } from "@/lib/utils";
 import { useConvexAuth } from "convex/react";
-export const colors = {
-  Red: "#e74c3c",
-  Green: "#27ae60",
-  Purple: "#8e44ad",
-};
+import { colors } from "../common/cards";
 
 const paths = {
   Diamond: {
@@ -23,25 +19,53 @@ const paths = {
   },
 };
 
+const sizeMap = {
+  Small: {
+    width: 20,
+    height: 40,
+    strokeWidth: 2,
+    cardClass: "w-32 h-16",
+  },
+  Medium: {
+    width: 50,
+    height: 100,
+    strokeWidth: 4,
+    cardClass: "w-64 h-32",
+  },
+  Large: {
+    width: 100,
+    height: 200,
+    strokeWidth: 8,
+    cardClass: "w-96 h-48",
+  },
+};
+
 export function Card({
   card,
   onClick,
   disabled = false,
   selected = false,
+  size = "Medium",
 }: {
   card: Card;
   onClick?: () => void;
   disabled?: boolean;
   selected?: boolean;
+  size?: "Small" | "Medium" | "Large";
 }) {
+  const dimensions = sizeMap[size];
   const shape = (
-    <svg viewBox="-2 -2 54 104" width="50" height="100">
+    <svg
+      viewBox="-2 -2 54 104"
+      width={dimensions.width}
+      height={dimensions.height}
+    >
       <path
         width="100"
         height="100"
         d={paths[card.shape].d}
         stroke={colors[card.color]}
-        strokeWidth={2}
+        strokeWidth={4}
         fill={
           card.fill === "Striped"
             ? `url(#striped-${card.color})`
@@ -57,7 +81,8 @@ export function Card({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "flex gap-2 justify-center items-center w-60 h-32 rounded-xl bg-white p-4 relative",
+        "flex gap-2 justify-center items-center rounded-xl bg-white p-4 relative",
+        dimensions.cardClass,
         "before:absolute before:inset-0 before:rounded-xl before:pointer-events-none",
         selected
           ? "before:border-4 before:border-blue-500"

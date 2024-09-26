@@ -1,10 +1,6 @@
 import { getCardForDisplay, type Card as CardType } from "@/common/cards";
 import { Card, InteractiveCard } from "./Card";
-export const colors = {
-  Red: "#e74c3c",
-  Green: "#27ae60",
-  Purple: "#8e44ad",
-};
+import { colors } from "@/common/cards";
 
 export function Puzzle({ cards }: { cards: CardType[] }) {
   const rowLength = 4;
@@ -17,7 +13,7 @@ export function Puzzle({ cards }: { cards: CardType[] }) {
     allCards.push(<Card card={getCardForDisplay(i + 1)}></Card>);
   }
   return (
-    <div className="bg-blue-300 flex flex-col gap-10">
+    <div className="flex flex-col gap-10">
       <svg height="0" width="0">
         <defs>
           <pattern

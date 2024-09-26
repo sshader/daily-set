@@ -3,51 +3,49 @@ import PuzzleProvider from "@/components/PuzzleProvider";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { api } from "@/convex/_generated/api";
-import {
-  convexAuthNextjsToken,
-  isAuthenticatedNextjs,
-} from "@convex-dev/auth/nextjs/server";
+import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
 import { fetchQuery } from "convex/nextjs";
-import Link from "next/link";
 import { GameOverlay } from "@/components/GameOverlay";
 import { GameStats } from "@/components/GameStats";
+import { Id } from "@/convex/_generated/dataModel";
+import { Overlay } from "@/components/Overlay";
+import Link from "next/link";
 
 export default async function HomePage() {
   const puzzle = await fetchQuery(api.play.loadGame, {});
-  const viewer = await fetchQuery(
-    api.users.viewer,
-    {},
-    {
-      token: convexAuthNextjsToken(),
-    },
-  );
 
   return (
     <PuzzleProvider puzzleId={puzzle._id}>
-      <div className="w-screen h-screen flex flex-col gap-10">
-        <div className="flex flex-row justify-end">
-          {viewer === null ? (
-            <Link href="/signin">
-              <Button>Sign in</Button>
-            </Link>
-          ) : (
-            <UserMenu>{viewer.name ?? viewer.email}</UserMenu>
-          )}
-        </div>
-        <div className="flex flex-col justify-center">
-          <div className="flex justify-center">
+      <div className="flex flex-col justify-center items-center h-full w-full">
+        <GameOverlayWrapper puzzleId={puzzle._id} />
+        <div className="flex flex-row w-full p-10">
+          <div className="w-1/2 pr-4">
+            <Puzzle cards={puzzle.cards} />
+          </div>
+          <div className="w-1/2 pl-4">
             {isAuthenticatedNextjs() ? (
-              <GameOverlay puzzleId={puzzle._id} />
+              <GameStats puzzleId={puzzle._id} />
             ) : null}
-            <div className="flex flex-row">
-              <Puzzle cards={puzzle.cards} />
-              {isAuthenticatedNextjs() ? (
-                <GameStats puzzleId={puzzle._id} />
-              ) : null}
-            </div>
           </div>
         </div>
       </div>
     </PuzzleProvider>
   );
+}
+
+async function GameOverlayWrapper({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
+  if (isAuthenticatedNextjs()) {
+    return <GameOverlay puzzleId={puzzleId} />;
+  } else {
+    return (
+      <Overlay>
+        <div className="flex flex-col gap-4 items-center">
+          <div>Please sign in to start playing.</div>
+          <Link href="/signin">
+            <Button>Sign in</Button>
+          </Link>
+        </div>
+      </Overlay>
+    );
+  }
 }

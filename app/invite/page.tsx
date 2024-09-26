@@ -9,11 +9,8 @@ import {
   AuthLoading,
   Unauthenticated,
   useConvex,
-  useConvexAuth,
   useQuery,
 } from "convex/react";
-import { formatDuration, intervalToDuration } from "date-fns";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import SignInPage from "../signin/SignInPage";
 
@@ -37,7 +34,7 @@ export default function LeaderboardPage({}: {}) {
         <SignInPage redirectTo={`/invite?i=${leaderboardId}&p=${password}`} />
       </Unauthenticated>
       <Authenticated>
-        <div>
+        <div className="flex flex-col gap-4 w-full h-full items-center justify-center">
           <Button
             onClick={() => {
               void convex

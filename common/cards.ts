@@ -23,3 +23,16 @@ export type Card = {
   count: 1 | 2 | 3;
   cardNumber: number;
 };
+
+// more color blind friendly
+// export const colors = {
+//   Red: "#b51963",
+//   Green: "#5ba300",
+//   Purple: "#054fb9",
+// };
+
+export const colors = {
+  Red: "#e74c3c",
+  Green: "#27ae60",
+  Purple: "#8e44ad",
+};

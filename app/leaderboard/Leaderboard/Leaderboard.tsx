@@ -23,18 +23,19 @@ export function Leaderboard() {
     }
   }, [leaderboards, router, shouldAutoNavigate]);
   return (
-    <div>
-      <div>Your leaderboards</div>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Your leaderboards</h1>
       {leaderboards === undefined ? (
         <div>Loading...</div>
       ) : leaderboards.length === 0 ? (
         <div>No leaderboards found</div>
       ) : (
-        <div>
+        <div className="flex flex-col gap-2">
           {leaderboards.map((leaderboard) => (
             <Link
               key={leaderboard._id}
               href={`/leaderboard/${leaderboard._id}`}
+              className="border rounded-md p-2"
             >
               {leaderboard.name}
             </Link>
@@ -42,6 +43,7 @@ export function Leaderboard() {
         </div>
       )}
       <Button
+        className="mr-auto"
         onClick={() => {
           void convex.mutation(api.leaderboard.create, {});
         }}

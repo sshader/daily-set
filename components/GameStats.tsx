@@ -5,7 +5,6 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useConvex, useQuery } from "convex/react";
 import { Card } from "./Card";
-import { stat } from "fs";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { formatDuration, intervalToDuration } from "date-fns";
@@ -28,11 +27,7 @@ export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
   if (stats.state.kind === "InProgress") {
     return (
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between">
-          <Timer
-            timeElapsedMs={stats.state.timeElapsedMsBeforeStart}
-            startTime={stats.state.startedAt}
-          />
+        <div className="flex flex-row">
           <Button
             onClick={() => {
               void convex.mutation(api.play.pauseGame, { puzzleId });
@@ -40,13 +35,19 @@ export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
           >
             Pause
           </Button>
+          <Timer
+            timeElapsedMs={stats.state.timeElapsedMsBeforeStart}
+            startTime={stats.state.startedAt}
+          />
         </div>
         <div>{`Sets found: ${stats.state.setsFound.length} / ${totalSets}`}</div>
         {stats.state.setsFound.map((s, idx) => {
           return (
             <div key={idx} className="flex flex-row">
               {s.map((c) => {
-                return <Card key={c} card={getCardForDisplay(c)} />;
+                return (
+                  <Card key={c} size="Small" card={getCardForDisplay(c)} />
+                );
               })}
             </div>
           );
@@ -74,7 +75,9 @@ export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
             return (
               <div key={idx} className="flex flex-row">
                 {s.map((c) => {
-                  return <Card key={c} card={getCardForDisplay(c)} />;
+                  return (
+                    <Card key={c} size="Small" card={getCardForDisplay(c)} />
+                  );
                 })}
               </div>
             );
