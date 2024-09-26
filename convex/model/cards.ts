@@ -5,23 +5,21 @@ import { Doc, Id } from "../_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError } from "convex/values";
 
-export type Card = {
-  color: "Red" | "Green" | "Purple";
-  fill: "Solid" | "Open" | "Striped";
-  shape: "Oval" | "Diamond" | "Squiggle";
-  count: 1 | 2 | 3;
-  cardNumber: number;
-};
-
 const isSet = (
   cardNumber1: number,
   cardNumber2: number,
   cardNumber3: number,
 ) => {
-  let num1 = cardNumber1;
-  let num2 = cardNumber2;
-  let num3 = cardNumber3;
+  let num1 = cardNumber1 - 1;
+  let num2 = cardNumber2 - 1;
+  let num3 = cardNumber3 - 1;
+
+  // 0121
+  // 2011
+  // 1201
+
   // count
+  // 16 31 46
   if ((num1 + num2 + num3) % 3 !== 0) {
     return false;
   }
@@ -29,9 +27,11 @@ const isSet = (
   num2 = (num2 - (num2 % 3)) / 3;
   num3 = (num3 - (num3 % 3)) / 3;
   // color
+  // 5 10 15
   if ((num1 + num2 + num3) % 3 !== 0) {
     return false;
   }
+  // 1 3 5
   num1 = (num1 - (num1 % 3)) / 3;
   num2 = (num2 - (num2 % 3)) / 3;
   num3 = (num3 - (num3 % 3)) / 3;
@@ -73,7 +73,7 @@ export const importPuzzle = async (
   }
   await ctx.db.insert("puzzles", {
     cards,
-    sets: allSets,
+    sets: allSets.map((s) => s.sort((a, b) => a - b)),
     day,
   });
 };
@@ -94,7 +94,7 @@ export const checkSet = async (
     );
     return null;
   }
-  const sortedSet = [...args.set].sort();
+  const sortedSet = [...set].sort();
   if (
     stats.state.setsFound.find(
       (s) => JSON.stringify([...s].sort()) === JSON.stringify(sortedSet),
@@ -102,9 +102,11 @@ export const checkSet = async (
   ) {
     return { result: "AlreadyFound" };
   }
+  console.log(sortedSet, puzzle.sets, stats.state.setsFound);
   if (
-    puzzle.sets.find((s) => JSON.stringify(s) === JSON.stringify(sortedSet)) !==
-    undefined
+    puzzle.sets.find(
+      (s) => JSON.stringify([...s].sort()) === JSON.stringify(sortedSet),
+    ) !== undefined
   ) {
     if (puzzle.sets.length - 1 === stats.state.setsFound.length) {
       await ctx.db.patch(stats._id, {
@@ -132,22 +134,40 @@ export const checkSet = async (
   return { result: "NotASet" };
 };
 
-export const getCardForDisplay = (cardNumber: number): Card => {
-  let num = cardNumber - 1;
-  const countBit = num % 3;
-  num = (num - countBit) / 3;
-  const colorBit = num % 3;
-  num = (num - colorBit) / 3;
-  const shapeBit = num % 3;
-  num = (num - shapeBit) / 3;
-  const fillBit = num % 3;
-  return {
-    count: countBit === 0 ? 1 : countBit === 1 ? 2 : 3,
-    color: colorBit === 0 ? "Red" : colorBit === 1 ? "Purple" : "Green",
-    shape: shapeBit === 0 ? "Squiggle" : shapeBit === 1 ? "Diamond" : "Oval",
-    fill: fillBit === 0 ? "Solid" : fillBit === 1 ? "Striped" : "Open",
-    cardNumber,
-  };
+export const ensurePuzzle = async (
+  ctx: QueryCtx,
+  args: {
+    puzzleSelector:
+      | { kind: "id"; id: Id<"puzzles"> }
+      | { kind: "day"; day?: string };
+  },
+) => {
+  let puzzle: Doc<"puzzles"> | null = null;
+  switch (args.puzzleSelector.kind) {
+    case "id":
+      puzzle = await ctx.db.get(args.puzzleSelector.id);
+      break;
+    case "day": {
+      const day = args.puzzleSelector.day;
+      if (day === undefined) {
+        puzzle = await ctx.db
+          .query("puzzles")
+          .withIndex("day")
+          .order("desc")
+          .first();
+      } else {
+        puzzle = await ctx.db
+          .query("puzzles")
+          .withIndex("day", (q) => q.eq("day", day))
+          .unique();
+      }
+      break;
+    }
+  }
+  if (puzzle === null) {
+    throw new Error("No puzzle found");
+  }
+  return puzzle;
 };
 
 export const ensurePuzzleAndUser = async (

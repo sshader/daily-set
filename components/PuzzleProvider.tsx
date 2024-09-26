@@ -2,7 +2,7 @@
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { createContext, ReactNode, useCallback, useState } from "react";
 
 type PuzzleContextType = {
@@ -39,7 +39,7 @@ export default function PuzzleProvider({
       const newSelectedCards = [...selectedCards, cardNumber];
       if (newSelectedCards.length === 3) {
         const result = await checkSet({ cards: newSelectedCards, puzzleId });
-        setSelectedCards([]);
+        setTimeout(() => setSelectedCards([]), 1000);
         return result;
       }
       setSelectedCards(newSelectedCards);

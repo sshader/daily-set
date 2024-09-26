@@ -3,6 +3,7 @@ import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import * as Cards from "./model/cards";
 import { Doc } from "./_generated/dataModel";
+import { getCardForDisplay } from "../common/cards";
 
 export const startGame = mutation({
   args: {
@@ -23,6 +24,58 @@ export const startGame = mutation({
         kind: "InProgress",
         setsFound: [],
         timeElapsedMsBeforeStart: 0,
+        startedAt: Date.now(),
+      },
+    });
+  },
+});
+
+export const pauseGame = mutation({
+  args: {
+    puzzleId: v.id("puzzles"),
+  },
+  handler: async (ctx, args) => {
+    const { puzzle, user, stats } = await Cards.ensurePuzzleAndUser(ctx, {
+      puzzleSelector: { kind: "id", id: args.puzzleId },
+    });
+    if (stats === null || stats.state.kind !== "InProgress") {
+      throw new ConvexError({
+        code: "InvalidState",
+        message: "Game not in progress",
+      });
+    }
+    await ctx.db.patch(stats._id, {
+      state: {
+        kind: "Paused",
+        setsFound: stats.state.setsFound,
+        timeElapsedMs:
+          stats.state.timeElapsedMsBeforeStart +
+          Date.now() -
+          stats.state.startedAt,
+      },
+    });
+  },
+});
+
+export const unpauseGame = mutation({
+  args: {
+    puzzleId: v.id("puzzles"),
+  },
+  handler: async (ctx, args) => {
+    const { puzzle, user, stats } = await Cards.ensurePuzzleAndUser(ctx, {
+      puzzleSelector: { kind: "id", id: args.puzzleId },
+    });
+    if (stats === null || stats.state.kind !== "Paused") {
+      throw new ConvexError({
+        code: "InvalidState",
+        message: "Game not paused",
+      });
+    }
+    await ctx.db.patch(stats._id, {
+      state: {
+        kind: "InProgress",
+        setsFound: stats.state.setsFound,
+        timeElapsedMsBeforeStart: stats.state.timeElapsedMs,
         startedAt: Date.now(),
       },
     });
@@ -85,7 +138,7 @@ export const loadGame = query({
     }
     return {
       _id: puzzle._id,
-      cards: puzzle.cards.map((c) => Cards.getCardForDisplay(c)),
+      cards: puzzle.cards.map((c) => getCardForDisplay(c)),
     };
   },
 });
@@ -98,6 +151,9 @@ export const loadStats = query({
     const { puzzle, stats, user } = await Cards.ensurePuzzleAndUser(ctx, {
       puzzleSelector: { kind: "day", day },
     });
-    return stats;
+    return {
+      stats,
+      totalSets: puzzle.sets.length,
+    };
   },
 });

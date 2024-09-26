@@ -42,9 +42,12 @@ export default defineSchema({
   leaderboard: defineTable({
     ownerId: v.id("users"),
     password: v.string(),
+    name: v.string(),
   }),
   leaderboardMembers: defineTable({
     userId: v.id("users"),
     leaderboard: v.id("leaderboard"),
-  }),
+  })
+    .index("user", ["userId"])
+    .index("leaderboard", ["leaderboard"]),
 });
