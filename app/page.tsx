@@ -3,7 +3,10 @@ import PuzzleProvider from "@/components/PuzzleProvider";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { api } from "@/convex/_generated/api";
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
+import {
+  convexAuthNextjsToken,
+  isAuthenticatedNextjs,
+} from "@convex-dev/auth/nextjs/server";
 import { fetchQuery } from "convex/nextjs";
 import Link from "next/link";
 import { GameOverlay } from "@/components/GameOverlay";
@@ -33,10 +36,14 @@ export default async function HomePage() {
         </div>
         <div className="flex flex-col justify-center">
           <div className="flex justify-center">
-            <GameOverlay puzzleId={puzzle._id} />
+            {isAuthenticatedNextjs() ? (
+              <GameOverlay puzzleId={puzzle._id} />
+            ) : null}
             <div className="flex flex-row">
               <Puzzle cards={puzzle.cards} />
-              <GameStats puzzleId={puzzle._id} />
+              {isAuthenticatedNextjs() ? (
+                <GameStats puzzleId={puzzle._id} />
+              ) : null}
             </div>
           </div>
         </div>
