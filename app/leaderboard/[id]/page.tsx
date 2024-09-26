@@ -1,9 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useQuery } from "convex/react";
+import { useConvex, useQuery } from "convex/react";
 import { formatDuration, intervalToDuration } from "date-fns";
 import Link from "next/link";
 
@@ -15,9 +16,12 @@ export default function LeaderboardPage({
   const info = useQuery(api.leaderboardStats.listTimes, {
     leaderboardId: params.id as Id<"leaderboard">,
   });
+  const convex = useConvex();
+  const { toast } = useToast();
   if (info === undefined) {
     return <div>Loading...</div>;
   }
+
   return (
     <div className="flex flex-col justify-between gap-4">
       <div className="flex flex-col gap-2">
@@ -51,9 +55,30 @@ export default function LeaderboardPage({
           ))}
         </table>
       </div>
-      <Link href={`/leaderboard?s=1`}>
-        <Button>See all leaderboards</Button>
-      </Link>
+      <div className="flex gap-2">
+        <Link href={`/leaderboard?s=1`}>
+          <Button>See all leaderboards</Button>
+        </Link>
+        <Button
+          variant="outline"
+          onClick={() => {
+            void convex
+              .query(api.leaderboard.getInvite, {
+                leaderboardId: params.id as Id<"leaderboard">,
+              })
+              .then(({ _id, password }) => {
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/invite?i=${_id}&p=${password}`,
+                );
+                toast({
+                  title: "Copied to clipboard",
+                });
+              });
+          }}
+        >
+          Invite friends!
+        </Button>
+      </div>
     </div>
   );
 }

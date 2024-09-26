@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { ensureUser } from "./model/user";
 import { ensureLeaderboard, getMembership } from "./model/leaderboard";
@@ -40,6 +40,30 @@ export const list = query({
     return leaderboards.flatMap((leaderboard) => {
       return leaderboard === null ? [] : [leaderboard];
     });
+  },
+});
+
+export const getInvite = query({
+  args: {
+    leaderboardId: v.id("leaderboard"),
+  },
+  handler: async (ctx, args) => {
+    const leaderboard = await ensureLeaderboard(ctx, args.leaderboardId);
+    const { membership } = await getMembership(ctx, leaderboard);
+    if (membership === null) {
+      throw new ConvexError({ code: "Unauthorized" });
+    }
+    return { password: leaderboard.password, _id: leaderboard._id };
+  },
+});
+
+export const getName = query({
+  args: {
+    leaderboardId: v.id("leaderboard"),
+  },
+  handler: async (ctx, args) => {
+    const leaderboard = await ensureLeaderboard(ctx, args.leaderboardId);
+    return leaderboard.name;
   },
 });
 
