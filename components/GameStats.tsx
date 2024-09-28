@@ -111,6 +111,7 @@ function Timer({
         }),
         {
           format: ["minutes", "seconds"],
+          zero: true,
         },
       )}
     </div>

@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { useConvex, useQuery } from "convex/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 export function Leaderboard() {
   const searchParams = useSearchParams();
@@ -13,19 +13,25 @@ export function Leaderboard() {
   const leaderboards = useQuery(api.leaderboard.list);
   const router = useRouter();
   const convex = useConvex();
-  useEffect(() => {
+  const autoNavigateTo = useMemo(() => {
     if (
       shouldAutoNavigate &&
       leaderboards !== undefined &&
       leaderboards.length === 1
     ) {
-      router.replace(`/leaderboard/${leaderboards[0]._id}`);
+      return `/leaderboard/${leaderboards[0]._id}`;
     }
-  }, [leaderboards, router, shouldAutoNavigate]);
+    return null;
+  }, [leaderboards, shouldAutoNavigate]);
+  useEffect(() => {
+    if (autoNavigateTo !== null) {
+      router.replace(autoNavigateTo);
+    }
+  }, [autoNavigateTo, router]);
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Your leaderboards</h1>
-      {leaderboards === undefined ? (
+      {leaderboards === undefined || autoNavigateTo !== null ? (
         <div>Loading...</div>
       ) : leaderboards.length === 0 ? (
         <div>No leaderboards found</div>

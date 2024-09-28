@@ -13,7 +13,7 @@ import { api } from "@/convex/_generated/api";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
-import { HomeIcon } from "@radix-ui/react-icons";
+import { HomeIcon, ListBulletIcon } from "@radix-ui/react-icons";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -59,13 +59,18 @@ async function Inner({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="w-screen h-screen flex flex-col gap-10">
-      <div className="flex flex-row justify-between pt-4">
-        <Link href="/">
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <HomeIcon className="h-4 w-4" />
-          </Button>
-        </Link>
+    <div className="w-screen h-screen flex flex-col gap-4">
+      <div className="flex flex-row justify-between p-4 border-b-2 border-gray-200 dark:border-gray-800">
+        <div className="flex flex-row gap-2">
+          <Link href="/">
+            <Button variant="secondary" size="icon" className="rounded-full">
+              <HomeIcon className="h-4 w-4" />
+            </Button>
+          </Link>
+          <Link href="/leaderboard">
+            <Button variant="secondary">Leaderboards</Button>
+          </Link>
+        </div>
         {viewer === null ? (
           <Link href="/signin">
             <Button>Sign in</Button>
@@ -74,7 +79,7 @@ async function Inner({ children }: { children: React.ReactNode }) {
           <UserMenu>{viewer.name ?? viewer.email}</UserMenu>
         )}
       </div>
-      <div className="flex w-screen  h-[calc(100vh-36px)]">{children}</div>
+      <div className="flex w-screen flex-grow min-h-1">{children}</div>
     </div>
   );
 }

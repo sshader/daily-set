@@ -14,12 +14,6 @@ const isSet = (
   let num2 = cardNumber2 - 1;
   let num3 = cardNumber3 - 1;
 
-  // 0121
-  // 2011
-  // 1201
-
-  // count
-  // 16 31 46
   if ((num1 + num2 + num3) % 3 !== 0) {
     return false;
   }
@@ -27,11 +21,9 @@ const isSet = (
   num2 = (num2 - (num2 % 3)) / 3;
   num3 = (num3 - (num3 % 3)) / 3;
   // color
-  // 5 10 15
   if ((num1 + num2 + num3) % 3 !== 0) {
     return false;
   }
-  // 1 3 5
   num1 = (num1 - (num1 % 3)) / 3;
   num2 = (num2 - (num2 % 3)) / 3;
   num3 = (num3 - (num3 % 3)) / 3;
@@ -102,7 +94,6 @@ export const checkSet = async (
   ) {
     return { result: "AlreadyFound" };
   }
-  console.log(sortedSet, puzzle.sets, stats.state.setsFound);
   if (
     puzzle.sets.find(
       (s) => JSON.stringify([...s].sort()) === JSON.stringify(sortedSet),

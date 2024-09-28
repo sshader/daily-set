@@ -23,7 +23,7 @@ export default function LeaderboardPage({
   }
 
   return (
-    <div className="flex flex-col  gap-4">
+    <div className="flex flex-col gap-4 p-4">
       <div className="flex flex-col gap-2">
         <div className="text-2xl font-bold">{info.leaderboard.name}</div>
         <table className="text-left">
@@ -36,7 +36,15 @@ export default function LeaderboardPage({
           </thead>
           {info.stats.map((stat, index) => (
             <tr key={stat.user._id}>
-              <td>{index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}</td>
+              <td>
+                {index === 0
+                  ? "🥇"
+                  : index === 1
+                    ? "🥈"
+                    : index === 2
+                      ? "🥉"
+                      : index + 1}
+              </td>
               <td>{stat.user.name}</td>
               <td>
                 {stat.timeToSolveMs === null
