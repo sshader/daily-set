@@ -1,7 +1,6 @@
 import { Puzzle } from "@/components/Puzzle";
 import PuzzleProvider from "@/components/PuzzleProvider";
 import { Button } from "@/components/ui/button";
-import { UserMenu } from "@/components/UserMenu";
 import { api } from "@/convex/_generated/api";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
 import { fetchQuery } from "convex/nextjs";
@@ -18,11 +17,11 @@ export default async function HomePage() {
     <PuzzleProvider puzzleId={puzzle._id}>
       <div className="flex flex-col justify-center items-center h-full w-full">
         <GameOverlayWrapper puzzleId={puzzle._id} />
-        <div className="flex flex-row w-full p-10">
-          <div className="w-1/2 pr-4">
+        <div className="flex flex-row flex-wrap w-full gap-8 p-10">
+          <div className="max-w-3/4 overflow-auto">
             <Puzzle cards={puzzle.cards} />
           </div>
-          <div className="w-1/2 pl-4">
+          <div className="flex-grow max-w-1/2 overflow-auto">
             {isAuthenticatedNextjs() ? (
               <GameStats puzzleId={puzzle._id} />
             ) : null}

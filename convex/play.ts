@@ -1,6 +1,5 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
 import * as Cards from "./model/cards";
 import { Doc } from "./_generated/dataModel";
 import { getCardForDisplay } from "../common/cards";

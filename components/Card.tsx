@@ -6,6 +6,8 @@ import { PuzzleContext } from "./PuzzleProvider";
 import { cn } from "@/lib/utils";
 import { useConvexAuth } from "convex/react";
 import { colors } from "../common/cards";
+import { useToast } from "./ui/use-toast";
+import confetti from "canvas-confetti";
 
 const paths = {
   Diamond: {
@@ -81,7 +83,7 @@ export function Card({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "flex gap-2 justify-center items-center rounded-xl bg-white p-4 relative",
+        "flex gap-2 flex-shrink-0 justify-center items-center rounded-xl bg-white p-4 relative",
         dimensions.cardClass,
         "before:absolute before:inset-0 before:rounded-xl before:pointer-events-none",
         selected
@@ -115,20 +117,48 @@ export function Card({
 export function InteractiveCard({ card }: { card: Card }) {
   const { selectedCards, selectCard } = useContext(PuzzleContext)!;
   const { isAuthenticated } = useConvexAuth();
+  const { toast } = useToast();
   const onClick = useCallback(() => {
     if (!isAuthenticated) {
       return;
     }
     selectCard(card.cardNumber)
       .then((r) => {
-        if (r !== null) {
-          alert(JSON.stringify(r));
+        if (r === null) {
+          return;
+        }
+        switch (r.result) {
+          case "AlreadyFound":
+            toast({
+              title: "Already found",
+              description: "You already found this set",
+            });
+            break;
+          case "NotASet":
+            toast({
+              title: "Not a set",
+              description: "This is not a valid set",
+            });
+            break;
+          case "FoundSet":
+            void confetti({
+              colors: Object.values(colors),
+              shapes: Object.values(paths).map((p) => {
+                return confetti.shapeFromPath({ path: p.d });
+              }),
+            });
+            break;
+          default:
+            break;
         }
       })
       .catch((e) => {
-        alert(e);
+        toast({
+          title: "Error",
+          description: "There was an error selecting this card",
+        });
       });
-  }, [card.cardNumber, isAuthenticated, selectCard]);
+  }, [card.cardNumber, isAuthenticated, selectCard, toast]);
   return (
     <Card
       card={card}

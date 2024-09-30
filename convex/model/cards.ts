@@ -78,7 +78,7 @@ export const checkSet = async (
     stats: Doc<"stats">;
     set: [number, number, number];
   },
-): Promise<null | { result: "NotASet" | "AlreadyFound" }> => {
+): Promise<null | { result: "NotASet" | "AlreadyFound" | "FoundSet" }> => {
   const { puzzle, user, stats, set } = args;
   if (stats.state.kind !== "InProgress") {
     console.warn(
@@ -120,7 +120,7 @@ export const checkSet = async (
         setsFound: [...stats.state.setsFound, args.set],
       },
     });
-    return null;
+    return { result: "FoundSet" };
   }
   return { result: "NotASet" };
 };

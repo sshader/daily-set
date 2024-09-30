@@ -27,7 +27,7 @@ export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
   if (stats.state.kind === "InProgress") {
     return (
       <div className="flex flex-col">
-        <div className="flex flex-row">
+        <div className="flex flex-row gap-2">
           <Button
             onClick={() => {
               void convex.mutation(api.play.pauseGame, { puzzleId });
@@ -103,7 +103,7 @@ function Timer({
     return () => clearInterval(interval);
   }, [update]);
   return (
-    <div className="bg-black text-white p-2 rounded-md">
+    <div className="flex bg-secondary text-white rounded-md items-center px-2">
       {formatDuration(
         intervalToDuration({
           start: 0,

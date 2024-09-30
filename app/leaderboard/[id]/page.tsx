@@ -79,7 +79,8 @@ export default function LeaderboardPage({
                   `${window.location.origin}/invite?i=${_id}&p=${password}`,
                 );
                 toast({
-                  title: "Copied to clipboard",
+                  title: "Invite link copied",
+                  description: "Paste this link to invite your friends!",
                 });
               });
           }}

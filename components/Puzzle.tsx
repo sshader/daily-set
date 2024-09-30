@@ -13,7 +13,7 @@ export function Puzzle({ cards }: { cards: CardType[] }) {
     allCards.push(<Card card={getCardForDisplay(i + 1)}></Card>);
   }
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-4">
       <svg height="0" width="0">
         <defs>
           <pattern
@@ -49,7 +49,7 @@ export function Puzzle({ cards }: { cards: CardType[] }) {
         </defs>
       </svg>
       {rows.map((row, idx) => (
-        <div className="flex gap-10" key={idx}>
+        <div className="flex gap-4" key={idx}>
           {row.map((card) => (
             <InteractiveCard key={card.cardNumber} card={card} />
           ))}

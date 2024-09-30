@@ -10,7 +10,7 @@ type PuzzleContextType = {
   selectedCards: Array<number>;
   selectCard: (
     cardNumber: number,
-  ) => Promise<null | { result: "NotASet" | "AlreadyFound" }>;
+  ) => Promise<null | { result: "NotASet" | "AlreadyFound" | "FoundSet" }>;
 };
 
 export const PuzzleContext = createContext<PuzzleContextType | undefined>(

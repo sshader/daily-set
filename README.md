@@ -15,8 +15,12 @@ After that, the puzzles will be scraped automatically once per day.
 - [ ] Add ability to view leaderboard history
 - [ ] Add profile info + colorblind friendly colors
 - [ ] Add ability to restart game?
-- [ ] Switch to toasts instead of alerts
+- [x] Switch to toasts instead of alerts
 - [ ] Add confetti / other cute stuff
 - [ ] Add favicon
 - [ ] Add hints?
 - [ ] Make it look ok on small screens / mobile
+- [ ] Set up log streams + sentry
+- [ ] Auto navigate on create leaderboard
+- [ ] Add ability to delete leaderboard
+- [ ] Improve invite UI
