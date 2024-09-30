@@ -1,11 +1,10 @@
 "use client";
 
 import { useCallback, useContext } from "react";
-import type { Card } from "../common/cards";
+import { colorSets, type Card } from "../common/cards";
 import { PuzzleContext } from "./PuzzleProvider";
 import { cn } from "@/lib/utils";
 import { useConvexAuth } from "convex/react";
-import { colors } from "../common/cards";
 import { useToast } from "./ui/use-toast";
 import confetti from "canvas-confetti";
 
@@ -48,13 +47,16 @@ export function Card({
   disabled = false,
   selected = false,
   size = "Medium",
+  colorPalette,
 }: {
   card: Card;
   onClick?: () => void;
   disabled?: boolean;
   selected?: boolean;
   size?: "Small" | "Medium" | "Large";
+  colorPalette: keyof typeof colorSets;
 }) {
+  const colors = colorSets[colorPalette];
   const dimensions = sizeMap[size];
   const shape = (
     <svg
@@ -114,7 +116,14 @@ export function Card({
   );
 }
 
-export function InteractiveCard({ card }: { card: Card }) {
+export function InteractiveCard({
+  card,
+  colorPalette,
+}: {
+  card: Card;
+  colorPalette: keyof typeof colorSets;
+}) {
+  const colors = colorSets[colorPalette];
   const { selectedCards, selectCard } = useContext(PuzzleContext)!;
   const { isAuthenticated } = useConvexAuth();
   const { toast } = useToast();
@@ -158,13 +167,14 @@ export function InteractiveCard({ card }: { card: Card }) {
           description: "There was an error selecting this card",
         });
       });
-  }, [card.cardNumber, isAuthenticated, selectCard, toast]);
+  }, [card.cardNumber, isAuthenticated, selectCard, toast, colors]);
   return (
     <Card
       card={card}
       onClick={onClick}
       disabled={!isAuthenticated}
       selected={selectedCards.includes(card.cardNumber)}
+      colorPalette={colorPalette}
     />
   );
 }

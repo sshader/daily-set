@@ -25,6 +25,7 @@ import type * as model_leaderboard from "../model/leaderboard.js";
 import type * as model_parse from "../model/parse.js";
 import type * as model_user from "../model/user.js";
 import type * as play from "../play.js";
+import type * as profile from "../profile.js";
 import type * as scrape from "../scrape.js";
 import type * as users from "../users.js";
 
@@ -47,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   "model/parse": typeof model_parse;
   "model/user": typeof model_user;
   play: typeof play;
+  profile: typeof profile;
   scrape: typeof scrape;
   users: typeof users;
 }>;

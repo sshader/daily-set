@@ -6,6 +6,16 @@ import { v } from "convex/values";
 // requires indexes defined on `authTables`.
 export default defineSchema({
   ...authTables,
+  users: defineTable({
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    isAnonymous: v.optional(v.boolean()),
+    colorPalette: v.optional(v.string()),
+  }).index("email", ["email"]),
   puzzles: defineTable({
     // Cards are denoted by a number corresponding to their position in the unsorted deck
     cards: v.array(v.number()),

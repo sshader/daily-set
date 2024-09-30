@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: "Daily Set",
   description: "Play the daily Set puzzle with your friends",
   icons: {
-    icon: "/convex.svg",
+    icon: "/favicon.ico",
   },
 };
 

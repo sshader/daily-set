@@ -13,6 +13,7 @@ import {
 import { useAuthActions } from "@convex-dev/auth/react";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { ReactNode } from "react";
+import { ColorToggle } from "./ColorToggle";
 
 export function UserMenu({ children }: { children: ReactNode }) {
   return (
@@ -31,6 +32,10 @@ export function UserMenu({ children }: { children: ReactNode }) {
           <DropdownMenuLabel className="flex items-center gap-2 py-0 font-normal">
             Theme
             <ThemeToggle />
+          </DropdownMenuLabel>
+          <DropdownMenuLabel className="flex items-center gap-2 py-0 font-normal">
+            Colors
+            <ColorToggle />
           </DropdownMenuLabel>
           <SignOutButton />
         </DropdownMenuContent>

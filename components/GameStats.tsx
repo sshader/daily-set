@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 
 export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
   const result = useQuery(api.play.loadStats, {});
+  const viewer = useQuery(api.users.viewer, {});
   const convex = useConvex();
   if (result === undefined) {
     return <div>Loading...</div>;
@@ -46,7 +47,12 @@ export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
             <div key={idx} className="flex flex-row">
               {s.map((c) => {
                 return (
-                  <Card key={c} size="Small" card={getCardForDisplay(c)} />
+                  <Card
+                    key={c}
+                    size="Small"
+                    card={getCardForDisplay(c)}
+                    colorPalette={viewer?.colorPalette ?? "default"}
+                  />
                 );
               })}
             </div>
@@ -76,7 +82,12 @@ export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
               <div key={idx} className="flex flex-row">
                 {s.map((c) => {
                   return (
-                    <Card key={c} size="Small" card={getCardForDisplay(c)} />
+                    <Card
+                      key={c}
+                      size="Small"
+                      card={getCardForDisplay(c)}
+                      colorPalette={viewer?.colorPalette ?? "default"}
+                    />
                   );
                 })}
               </div>

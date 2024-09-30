@@ -1,8 +1,15 @@
 import { getCardForDisplay, type Card as CardType } from "@/common/cards";
 import { Card, InteractiveCard } from "./Card";
-import { colors } from "@/common/cards";
+import { colorSets } from "@/common/cards";
 
-export function Puzzle({ cards }: { cards: CardType[] }) {
+export function Puzzle({
+  cards,
+  colorPalette,
+}: {
+  cards: CardType[];
+  colorPalette: keyof typeof colorSets;
+}) {
+  const colors = colorSets[colorPalette];
   const rowLength = 4;
   const rows = [];
   for (let i = 0; i < cards.length; i += rowLength) {
@@ -10,7 +17,9 @@ export function Puzzle({ cards }: { cards: CardType[] }) {
   }
   const allCards = [];
   for (let i = 0; i < 81; i += 1) {
-    allCards.push(<Card card={getCardForDisplay(i + 1)}></Card>);
+    allCards.push(
+      <Card card={getCardForDisplay(i + 1)} colorPalette={colorPalette}></Card>,
+    );
   }
   return (
     <div className="flex flex-col gap-4">
@@ -51,7 +60,11 @@ export function Puzzle({ cards }: { cards: CardType[] }) {
       {rows.map((row, idx) => (
         <div className="flex gap-4" key={idx}>
           {row.map((card) => (
-            <InteractiveCard key={card.cardNumber} card={card} />
+            <InteractiveCard
+              key={card.cardNumber}
+              card={card}
+              colorPalette={colorPalette}
+            />
           ))}
         </div>
       ))}

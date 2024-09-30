@@ -31,8 +31,23 @@ export type Card = {
 //   Purple: "#054fb9",
 // };
 
-export const colors = {
-  Red: "#e74c3c",
-  Green: "#27ae60",
-  Purple: "#8e44ad",
+export const colorSets: Record<
+  string,
+  { Red: string; Green: string; Purple: string }
+> = {
+  default: {
+    Red: "#e74c3c",
+    Green: "#27ae60",
+    Purple: "#8e44ad",
+  },
+  colorBlind: {
+    Red: "#b51963",
+    Green: "#5ba300",
+    Purple: "#054fb9",
+  },
+  convex: {
+    Red: "#EE342F",
+    Green: "#F3B01C",
+    Purple: "#8D2676",
+  },
 };
