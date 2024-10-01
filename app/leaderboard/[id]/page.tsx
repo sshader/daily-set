@@ -1,21 +1,38 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useConvex, useQuery } from "convex/react";
+import {
+  CheckIcon,
+  CommitIcon,
+  DiscIcon,
+  Pencil1Icon,
+} from "@radix-ui/react-icons";
+import { useConvex, useConvexAuth, useQuery } from "convex/react";
 import { formatDuration, intervalToDuration } from "date-fns";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function LeaderboardPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const info = useQuery(api.leaderboardStats.listTimes, {
-    leaderboardId: params.id as Id<"leaderboard">,
-  });
+  const { isLoading } = useConvexAuth();
+  const info = useQuery(
+    api.leaderboardStats.listTimes,
+    isLoading
+      ? "skip"
+      : {
+          leaderboardId: params.id as Id<"leaderboard">,
+        },
+  );
+  const viewer = useQuery(api.users.viewer);
+  const [name, setName] = useState(info?.leaderboard.name ?? "");
+  const [isEditing, setIsEditing] = useState(false);
   const convex = useConvex();
   const { toast } = useToast();
   if (info === undefined) {
@@ -25,7 +42,42 @@ export default function LeaderboardPage({
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex flex-col gap-2">
-        <div className="text-2xl font-bold">{info.leaderboard.name}</div>
+        <div className="text-2xl font-bold flex gap-2">
+          {isEditing ? (
+            <>
+              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <Button
+                size={"icon"}
+                onClick={() => {
+                  convex
+                    .mutation(api.leaderboard.setName, {
+                      leaderboardId: params.id as Id<"leaderboard">,
+                      name,
+                    })
+                    .then(() => {
+                      setIsEditing(false);
+                    });
+                }}
+              >
+                <CheckIcon />
+              </Button>
+            </>
+          ) : (
+            <>
+              {info.leaderboard.name}
+              {viewer?._id === info.leaderboard.ownerId && (
+                <Button
+                  size={"icon"}
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                >
+                  <Pencil1Icon />
+                </Button>
+              )}
+            </>
+          )}
+        </div>
         <table className="text-left">
           <thead>
             <tr>

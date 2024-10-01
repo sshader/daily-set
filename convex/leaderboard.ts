@@ -125,3 +125,20 @@ export const trash = mutation({
     await ctx.db.delete(leaderboard._id);
   },
 });
+
+export const setName = mutation({
+  args: {
+    leaderboardId: v.id("leaderboard"),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const leaderboard = await ensureLeaderboard(ctx, args.leaderboardId);
+    const { isOwner } = await getMembership(ctx, leaderboard);
+    if (!isOwner) {
+      return { reason: "OnlyOwnerCanRename" };
+    }
+    await ctx.db.patch(leaderboard._id, {
+      name: args.name,
+    });
+  },
+});
