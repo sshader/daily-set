@@ -1,13 +1,14 @@
 "use client";
 
-import { useConvex, useQuery } from "convex/react";
+import { useConvex, useConvexAuth, useQuery } from "convex/react";
 import { Button } from "./ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Overlay } from "./Overlay";
 
 export function GameOverlay({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
-  const result = useQuery(api.play.loadStats, {});
+  const { isAuthenticated } = useConvexAuth();
+  const result = useQuery(api.play.loadStats, isAuthenticated ? {} : "skip");
   const convex = useConvex();
   if (result === undefined) {
     return <div>Loading...</div>;

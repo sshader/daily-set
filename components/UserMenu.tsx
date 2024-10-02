@@ -14,6 +14,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { ReactNode } from "react";
 import { ColorToggle } from "./ColorToggle";
+import { useRouter } from "next/navigation";
 
 export function UserMenu({ children }: { children: ReactNode }) {
   return (
@@ -46,7 +47,16 @@ export function UserMenu({ children }: { children: ReactNode }) {
 
 function SignOutButton() {
   const { signOut } = useAuthActions();
+  const router = useRouter();
   return (
-    <DropdownMenuItem onClick={() => void signOut()}>Sign out</DropdownMenuItem>
+    <DropdownMenuItem
+      onClick={() =>
+        void signOut().then(() => {
+          router.push("/signin");
+        })
+      }
+    >
+      Sign out
+    </DropdownMenuItem>
   );
 }

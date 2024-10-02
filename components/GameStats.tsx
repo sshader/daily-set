@@ -3,7 +3,7 @@
 import { getCardForDisplay } from "@/common/cards";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useConvex, useQuery } from "convex/react";
+import { useConvex, useConvexAuth, useQuery } from "convex/react";
 import { Card } from "./Card";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -11,7 +11,8 @@ import { formatDuration, intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 
 export function GameStats({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
-  const result = useQuery(api.play.loadStats, {});
+  const { isAuthenticated } = useConvexAuth();
+  const result = useQuery(api.play.loadStats, isAuthenticated ? {} : "skip");
   const viewer = useQuery(api.users.viewer, {});
   const convex = useConvex();
   if (result === undefined) {

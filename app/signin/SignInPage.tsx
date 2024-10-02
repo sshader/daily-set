@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignInPage({
@@ -48,6 +49,7 @@ function SignInWithPassword({ redirectTo }: { redirectTo: string }) {
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
   return (
     <form
       className="flex flex-col"
@@ -56,15 +58,18 @@ function SignInWithPassword({ redirectTo }: { redirectTo: string }) {
         setSubmitting(true);
         const formData = new FormData(event.currentTarget);
         formData.set("redirectTo", redirectTo);
-        signIn("password", formData).catch((error) => {
-          console.error(error);
-          const title =
-            flow === "signIn"
-              ? "Could not sign in, did you mean to sign up?"
-              : "Could not sign up, did you mean to sign in?";
-          toast({ title, variant: "destructive" });
-          setSubmitting(false);
-        });
+        signIn("password", formData)
+          .catch((error) => {
+            const title =
+              flow === "signIn"
+                ? "Could not sign in, did you mean to sign up?"
+                : "Could not sign up, did you mean to sign in?";
+            toast({ title, variant: "destructive" });
+            setSubmitting(false);
+          })
+          .then(() => {
+            router.push(redirectTo);
+          });
       }}
     >
       <label htmlFor="email">Email</label>
