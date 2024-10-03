@@ -26,3 +26,4 @@ After that, the puzzles will be scraped automatically once per day.
 - [ ] Improve invite UI
 - [ ] Add link to instructions
 - [ ] Add "give up" state?
+- [ ] Pause on focus

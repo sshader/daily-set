@@ -38,10 +38,8 @@ export const pauseGame = mutation({
       puzzleSelector: { kind: "id", id: args.puzzleId },
     });
     if (stats === null || stats.state.kind !== "InProgress") {
-      throw new ConvexError({
-        code: "InvalidState",
-        message: "Game not in progress",
-      });
+      console.warn("Game not in progress");
+      return;
     }
     await ctx.db.patch(stats._id, {
       state: {

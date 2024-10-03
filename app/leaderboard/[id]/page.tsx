@@ -21,14 +21,14 @@ export default function LeaderboardPage({
 }: {
   params: { id: string };
 }) {
-  const { isLoading } = useConvexAuth();
+  const { isAuthenticated } = useConvexAuth();
   const info = useQuery(
     api.leaderboardStats.listTimes,
-    isLoading
-      ? "skip"
-      : {
+    isAuthenticated
+      ? {
           leaderboardId: params.id as Id<"leaderboard">,
-        },
+        }
+      : "skip",
   );
   const viewer = useQuery(api.users.viewer);
   const [name, setName] = useState(info?.leaderboard.name ?? "");
