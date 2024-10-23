@@ -47,16 +47,7 @@ export function UserMenu({ children }: { children: ReactNode }) {
 
 function SignOutButton() {
   const { signOut } = useAuthActions();
-  const router = useRouter();
   return (
-    <DropdownMenuItem
-      onClick={() =>
-        void signOut().then(() => {
-          router.push("/signin");
-        })
-      }
-    >
-      Sign out
-    </DropdownMenuItem>
+    <DropdownMenuItem onClick={() => void signOut()}>Sign out</DropdownMenuItem>
   );
 }
