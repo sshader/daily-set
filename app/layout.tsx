@@ -54,7 +54,7 @@ async function Inner({ children }: { children: React.ReactNode }) {
     api.users.viewer,
     {},
     {
-      token: convexAuthNextjsToken(),
+      token: await convexAuthNextjsToken(),
     },
   );
 

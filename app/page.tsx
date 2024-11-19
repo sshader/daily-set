@@ -19,7 +19,7 @@ export default async function HomePage() {
     api.users.viewer,
     {},
     {
-      token: convexAuthNextjsToken(),
+      token: await convexAuthNextjsToken(),
     },
   );
   return (

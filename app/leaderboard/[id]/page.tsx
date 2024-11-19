@@ -14,13 +14,11 @@ import {
 import { useConvex, useConvexAuth, useQuery } from "convex/react";
 import { formatDuration, intervalToDuration } from "date-fns";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
-export default function LeaderboardPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function LeaderboardPage({}: {}) {
+  const params = useParams<{ id: string }>();
   const { isAuthenticated } = useConvexAuth();
   const info = useQuery(
     api.leaderboardStats.listTimes,
