@@ -22,6 +22,7 @@ export default async function HomePage() {
       token: await convexAuthNextjsToken(),
     },
   );
+  const isAuthenticated = await isAuthenticatedNextjs();
   return (
     <PuzzleProvider puzzleId={puzzle._id}>
       <div className="flex flex-col justify-center items-center h-full w-full">
@@ -34,9 +35,7 @@ export default async function HomePage() {
             />
           </div>
           <div className="flex-grow max-w-1/2 overflow-auto">
-            {isAuthenticatedNextjs() ? (
-              <GameStats puzzleId={puzzle._id} />
-            ) : null}
+            {isAuthenticated ? <GameStats puzzleId={puzzle._id} /> : null}
           </div>
         </div>
       </div>
@@ -45,7 +44,8 @@ export default async function HomePage() {
 }
 
 async function GameOverlayWrapper({ puzzleId }: { puzzleId: Id<"puzzles"> }) {
-  if (isAuthenticatedNextjs()) {
+  const isAuthenticated = await isAuthenticatedNextjs();
+  if (isAuthenticated) {
     return <GameOverlay puzzleId={puzzleId} />;
   } else {
     return (

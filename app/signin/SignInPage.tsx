@@ -21,9 +21,13 @@ export default function SignInPage({
           <h2 className="font-semibold text-2xl tracking-tight">
             Sign in or create an account
           </h2>
-          <SignInWithGitHub redirectTo={redirectTo} />
+          <SignInWithGitHub
+            redirectTo={`${window.location.origin}${redirectTo}`}
+          />
           <SignInMethodDivider />
-          <SignInWithPassword redirectTo={redirectTo} />
+          <SignInWithPassword
+            redirectTo={`${window.location.origin}${redirectTo}`}
+          />
         </>
       </div>
     </div>
