@@ -210,3 +210,39 @@ export const ensurePuzzleAndUser = async (
     .unique();
   return { puzzle, user, stats };
 };
+
+export function generatePuzzle(): Array<number> {
+  let shuffledCards = _.shuffle(Array.from({ length: 81 }, (_, i) => i + 1));
+  let cards = [];
+  for (let i = 0; i < 12; i++) {
+    cards.push(shuffledCards[i]);
+  }
+  let attempts = 1;
+  while (!isValidPuzzle(cards)) {
+    console.log(`Not a valid puzzle, shuffling again (attempt ${attempts})`);
+    shuffledCards = _.shuffle(shuffledCards);
+    cards = [];
+    for (let i = 0; i < 12; i++) {
+      cards.push(shuffledCards[i]);
+    }
+    attempts += 1;
+  }
+  return cards;
+}
+
+function isValidPuzzle(cards: Array<number>) {
+  if (cards.length !== 12) {
+    return false;
+  }
+  const allSets: Array<[number, number, number]> = [];
+  for (let idx1 = 0; idx1 < cards.length - 2; idx1 += 1) {
+    for (let idx2 = idx1 + 1; idx2 < cards.length - 1; idx2 += 1) {
+      for (let idx3 = idx2 + 1; idx3 < cards.length; idx3 += 1) {
+        if (isSet(cards[idx1], cards[idx2], cards[idx3])) {
+          allSets.push([cards[idx1], cards[idx2], cards[idx3]]);
+        }
+      }
+    }
+  }
+  return allSets.length === 6;
+}
